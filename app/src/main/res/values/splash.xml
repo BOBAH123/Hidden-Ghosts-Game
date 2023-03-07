@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.HiddenGhosts.Starting" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@drawable/background_image</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen_game_icon</item>
+        <item name="android:animationDuration">2000</item>
+        <item name="postSplashScreenTheme">@style/Theme.HiddenGhosts</item>
+    </style>
+</resources>
