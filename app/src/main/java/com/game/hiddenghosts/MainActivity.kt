@@ -8,6 +8,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.game.hiddenghosts.navigation.SetupNavHost
 import com.game.hiddenghosts.ui.theme.HiddenGhostsTheme
+import com.game.hiddenghosts.viewModel.GhostGameViewModel
 
 class MainActivity : ComponentActivity() {
     private val viewModel: GhostGameViewModel by viewModels()

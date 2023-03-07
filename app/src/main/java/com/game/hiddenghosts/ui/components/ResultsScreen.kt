@@ -1,6 +1,7 @@
 package com.game.hiddenghosts.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,28 +31,31 @@ fun ResultsScreen(
     result: Boolean?
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = "$score",
-            color = Color.White,
-            fontSize = 16.sp,
-            fontStyle = FontStyle.Normal,
-            fontWeight = FontWeight(600),
+        Column(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .align(Alignment.TopCenter)
-        )
-        Text(
-            text = "Game score",
-            color = Color.White,
-            fontSize = 16.sp,
-            fontStyle = FontStyle.Normal,
-            fontWeight = FontWeight(600),
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .align(Alignment.Center)
-        )
+                .padding(top = 210.dp)
+                .align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "$score",
+                color = Color.White,
+                fontSize = 72.sp,
+                fontStyle = FontStyle.Normal,
+                fontWeight = FontWeight(700),
+            )
+            Text(
+                text = "Score",
+                color = Color.White,
+                fontSize = 32.sp,
+                fontStyle = FontStyle.Normal,
+                fontWeight = FontWeight(700),
+            )
+        }
+
         Button(
             modifier = Modifier
+                .padding(bottom = 36.dp)
                 .clip(RoundedCornerShape(24.dp))
                 .align(Alignment.BottomCenter)
                 .width(240.dp)

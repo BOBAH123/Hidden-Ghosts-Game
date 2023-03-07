@@ -16,9 +16,6 @@ import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -27,8 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import com.game.hiddenghosts.GhostCardModel
+import com.game.hiddenghosts.model.GhostCardModel
 import com.game.hiddenghosts.ui.theme.CardStandardBackground
+import com.game.hiddenghosts.ui.theme.RightCellBackground
 import com.game.hiddenghosts.ui.theme.SelectedCellBackground
 import com.game.hiddenghosts.ui.theme.WrongCellBackground
 import kotlinx.coroutines.delay
@@ -40,18 +38,19 @@ fun GameCard(
     data: GhostCardModel,
     onClick: (Boolean) -> Unit
 ) {
-    var isVisible by remember { mutableStateOf(true) }
-    val transition = updateTransition(targetState = isVisible, label = "")
+    val transition = updateTransition(targetState = data.isVisible.value, label = "")
+    val animationDuration = 500
+    val delayDuration = 1000
 
     val alpha by transition.animateFloat(
         transitionSpec = {
             if (false isTransitioningTo true) {
-                tween(durationMillis = 500)
+                tween(durationMillis = animationDuration)
             } else {
                 if (data.isSelected) {
                     TweenSpec(0)
                 } else {
-                    tween(durationMillis = 500, delayMillis = 1000)
+                    tween(durationMillis = animationDuration, delayMillis = delayDuration)
                 }
             }
         }, label = ""
@@ -59,13 +58,11 @@ fun GameCard(
         if (it) 1f else 0f
     }
 
-    LaunchedEffect(isVisible) {
-        if (isVisible) {
-            delay(1000L)
-            if (!data.isSelected) {
-                isVisible = false
-            }
-        }
+    LaunchedEffect(data.isVisible) {
+        delay(delayDuration.toLong())
+        data.isVisible.value = false
+        delay((animationDuration + delayDuration).toLong())
+        data.isClickable = true
     }
 
     Box(
@@ -77,8 +74,9 @@ fun GameCard(
             .height(72.dp)
             .width(72.dp)
             .clickable {
-                if (!data.isSelected) {
-                    isVisible = true
+                if (data.isClickable) {
+                    data.isClickable = false
+                    data.isVisible.value = true
                     data.isSelected = true
                     onClick(data.isRight)
                 }
@@ -90,15 +88,17 @@ fun GameCard(
                 .alpha(alpha)
                 .fillMaxSize()
                 .background(
-                    if (data.isRight) SelectedCellBackground
-                    else if (data.isSelected) WrongCellBackground
+                    if (data.isSelected) {
+                        if (data.isRight) RightCellBackground
+                        else WrongCellBackground
+                    } else if (data.isRight) SelectedCellBackground
                     else Color.Transparent
                 ),
             imageVector = ImageVector.vectorResource(
                 id = data.icon
             ),
             tint = Color.Unspecified,
-            contentDescription = "Wrong choice"
+            contentDescription = null
         )
     }
 }

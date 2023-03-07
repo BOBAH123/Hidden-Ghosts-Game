@@ -23,10 +23,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.game.hiddenghosts.GhostGameViewModel
 import com.game.hiddenghosts.ui.components.GameFieldScreen
 import com.game.hiddenghosts.ui.components.ResultsScreen
 import com.game.hiddenghosts.ui.theme.GamePrimary
+import com.game.hiddenghosts.viewModel.GhostGameViewModel
 
 @Composable
 fun SetupNavHost(navController: NavHostController, viewModel: GhostGameViewModel) {
@@ -69,11 +69,9 @@ fun SetupNavHost(navController: NavHostController, viewModel: GhostGameViewModel
                 }
             )) {
             it.arguments?.getInt("level")?.let { level ->
-                viewModel.loadGhostCards(level)
                 GameFieldScreen(
                     level = level,
                     viewModel,
-                    viewModel.getCards().value!!,
                     navController
                 )
             }
