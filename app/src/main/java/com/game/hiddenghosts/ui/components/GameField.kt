@@ -8,12 +8,11 @@ import com.game.hiddenghosts.model.GhostCardModel
 @Composable
 fun GameField(
     fieldWidth: Int,
-    fieldHeight: Int,
     cards: List<GhostCardModel>,
     onClick: (Boolean) -> Unit
 ) {
     LazyVerticalGrid(columns = GridCells.Fixed(fieldWidth)) {
-        items(fieldWidth * fieldHeight) { cardIndex ->
+        items(cards.size) { cardIndex ->
             GameCard(
                 data = cards[cardIndex]
             ) { onClick(it) }

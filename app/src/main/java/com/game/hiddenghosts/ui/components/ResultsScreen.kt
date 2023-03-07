@@ -58,7 +58,7 @@ fun ResultsScreen(
                 .padding(bottom = 36.dp)
                 .clip(RoundedCornerShape(24.dp))
                 .align(Alignment.BottomCenter)
-                .width(240.dp)
+                .width(288.dp)
                 .height(48.dp),
             onClick = {
                 level?.let {

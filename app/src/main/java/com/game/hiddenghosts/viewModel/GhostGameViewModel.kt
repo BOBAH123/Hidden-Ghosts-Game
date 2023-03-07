@@ -2,14 +2,16 @@ package com.game.hiddenghosts.viewModel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.game.hiddenghosts.R
 import com.game.hiddenghosts.model.GhostCardModel
+import kotlinx.coroutines.launch
 
 class GhostGameViewModel : ViewModel() {
     private var tries: Int = 0
     private var ghostsNumber = 0
     var fieldWidth = 4
-    var fieldHeight = 0
+    var fieldHeight = 4
     var score = mutableStateOf(0)
     var resultVisibility = mutableStateOf(false)
     var successResult = mutableStateOf(false)
@@ -30,31 +32,36 @@ class GhostGameViewModel : ViewModel() {
         ghostsNumber = level + 3
         tries = ghostsNumber
         when {
-            level < 4 -> fieldHeight = ghostsNumber
+            level < 4 -> {
+                fieldWidth = 4
+                fieldHeight = ghostsNumber
+            }
             else -> {
                 fieldWidth = 5
                 fieldHeight = ghostsNumber - 1
             }
         }
         val list = mutableListOf<GhostCardModel>()
-        repeat(fieldWidth * fieldHeight - ghostsNumber) {
-            list.add(
-                GhostCardModel(
-                    isVisible = mutableStateOf(false)
+        viewModelScope.launch {
+            repeat(fieldWidth * fieldHeight - ghostsNumber) {
+                list.add(
+                    GhostCardModel(
+                        isVisible = mutableStateOf(false)
+                    )
                 )
-            )
-        }
-        repeat(ghostsNumber) {
-            list.add(
-                GhostCardModel(
-                    icon = ghostImages[
-                            if (it < ghostImages.size) it
-                            else it - ghostImages.size
-                    ],
-                    isRight = true,
-                    isVisible = mutableStateOf(true)
+            }
+            repeat(ghostsNumber) {
+                list.add(
+                    GhostCardModel(
+                        icon = ghostImages[
+                                if (it < ghostImages.size) it
+                                else it - ghostImages.size
+                        ],
+                        isRight = true,
+                        isVisible = mutableStateOf(true)
+                    )
                 )
-            )
+            }
         }
         cards.value = list.shuffled()
     }
@@ -66,6 +73,11 @@ class GhostGameViewModel : ViewModel() {
         tries--
         if (tries == 0) {
             resultVisibility.value = true
+            cards.value.map {
+                if (it.isRight)
+                    it.isVisible.value = true
+                it.isClickable = false
+            }
             if ((score.value / 5) == ghostsNumber)
                 successResult.value = true
         }

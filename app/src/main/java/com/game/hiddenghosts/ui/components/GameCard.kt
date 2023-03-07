@@ -25,12 +25,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.game.hiddenghosts.model.GhostCardModel
+import com.game.hiddenghosts.ui.theme.Animations
 import com.game.hiddenghosts.ui.theme.CardStandardBackground
 import com.game.hiddenghosts.ui.theme.RightCellBackground
 import com.game.hiddenghosts.ui.theme.SelectedCellBackground
 import com.game.hiddenghosts.ui.theme.WrongCellBackground
 import kotlinx.coroutines.delay
-
 
 @Composable
 fun GameCard(
@@ -39,18 +39,19 @@ fun GameCard(
     onClick: (Boolean) -> Unit
 ) {
     val transition = updateTransition(targetState = data.isVisible.value, label = "")
-    val animationDuration = 500
-    val delayDuration = 1000
 
     val alpha by transition.animateFloat(
         transitionSpec = {
             if (false isTransitioningTo true) {
-                tween(durationMillis = animationDuration)
+                tween(durationMillis = Animations.animationDuration)
             } else {
-                if (data.isSelected) {
+                if (!data.isSelected && !data.isRight) {
                     TweenSpec(0)
                 } else {
-                    tween(durationMillis = animationDuration, delayMillis = delayDuration)
+                    tween(
+                        durationMillis = Animations.animationDuration,
+                        delayMillis = Animations.delayDuration
+                    )
                 }
             }
         }, label = ""
@@ -59,9 +60,9 @@ fun GameCard(
     }
 
     LaunchedEffect(data.isVisible) {
-        delay(delayDuration.toLong())
+        delay(Animations.delayDuration.toLong())
         data.isVisible.value = false
-        delay((animationDuration + delayDuration).toLong())
+        delay((Animations.animationDuration + Animations.delayDuration).toLong())
         data.isClickable = true
     }
 

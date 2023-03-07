@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.game.hiddenghosts.R
 import com.game.hiddenghosts.navigation.Screen
+import com.game.hiddenghosts.ui.theme.Animations
 import com.game.hiddenghosts.viewModel.GhostGameViewModel
 import kotlinx.coroutines.delay
 
@@ -59,14 +60,13 @@ fun GameFieldScreen(
             }
             GameField(
                 fieldWidth = viewModel.fieldWidth,
-                fieldHeight = viewModel.fieldHeight,
                 cards = viewModel.cards.value,
                 onClick = { viewModel.onClick(it) }
             )
         }
         LaunchedEffect(viewModel.resultVisibility.value) {
             if (viewModel.resultVisibility.value) {
-                delay(1000L)
+                delay(Animations.delayDuration.toLong())
                 navController.popBackStack()
                 navController.navigate(
                     Screen.Results.route + "?level=$level" +
@@ -81,7 +81,7 @@ fun GameFieldScreen(
         val alpha by transition.animateFloat(
             transitionSpec = {
                 if (false isTransitioningTo true) {
-                    tween(durationMillis = 500)
+                    tween(durationMillis = Animations.animationDuration)
                 } else {
                     TweenSpec(0)
                 }
