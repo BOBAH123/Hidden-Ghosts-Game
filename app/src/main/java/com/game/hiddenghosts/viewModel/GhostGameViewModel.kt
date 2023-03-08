@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.game.hiddenghosts.R
 import com.game.hiddenghosts.model.GhostCardModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class GhostGameViewModel : ViewModel() {
@@ -25,7 +26,7 @@ class GhostGameViewModel : ViewModel() {
         R.drawable.icon_ghost_5,
     )
 
-    fun loadGhostCards(level: Int) {
+    fun loadGameField(level: Int) {
         resultVisibility.value = false
         successResult.value = false
         score.value = 0
@@ -41,17 +42,27 @@ class GhostGameViewModel : ViewModel() {
                 fieldHeight = ghostsNumber - 1
             }
         }
-        val list = mutableListOf<GhostCardModel>()
+        val cardsList = mutableListOf<GhostCardModel>()
         viewModelScope.launch {
+            cardsList.addAll(generateCardsList())
+        }
+        cards.value = cardsList
+    }
+
+    private suspend fun generateCardsList(): List<GhostCardModel> {
+        val cardsList = mutableListOf<GhostCardModel>()
+        val addWrongCards = viewModelScope.async {
             repeat(fieldWidth * fieldHeight - ghostsNumber) {
-                list.add(
+                cardsList.add(
                     GhostCardModel(
                         isVisible = mutableStateOf(false)
                     )
                 )
             }
+        }
+        val addCorrectCards = viewModelScope.async {
             repeat(ghostsNumber) {
-                list.add(
+                cardsList.add(
                     GhostCardModel(
                         icon = ghostImages[
                                 if (it < ghostImages.size) it
@@ -62,8 +73,11 @@ class GhostGameViewModel : ViewModel() {
                     )
                 )
             }
+            cardsList.shuffle()
         }
-        cards.value = list.shuffled()
+        addWrongCards.await()
+        addCorrectCards.await()
+        return cardsList
     }
 
     fun onClick(value: Boolean) {

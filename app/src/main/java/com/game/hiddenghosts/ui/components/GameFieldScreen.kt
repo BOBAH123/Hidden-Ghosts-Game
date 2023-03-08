@@ -36,7 +36,7 @@ fun GameFieldScreen(
     navController: NavHostController
 ) {
     LaunchedEffect(level) {
-        viewModel.loadGhostCards(level)
+        viewModel.loadGameField(level)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
